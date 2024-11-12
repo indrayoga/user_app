@@ -4,24 +4,29 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:user_app/app/data/profile.dart';
+import 'package:user_app/config.dart';
 
 import 'app/routes/app_pages.dart';
 
 void main() async {
+  print("start");
+
   await GetStorage.init();
 
   final box = GetStorage();
-  Map user = {};
+  Map<String, dynamic> data = {};
 
   Future getUser() async {
     if (box.read('user') != null) {
-      var response = await http.get(
-          Uri.parse("https://6ac3-36-85-37-102.ngrok-free.app/api/user"),
-          headers: {
-            'Authorization': 'Bearer ${box.read('user')['token']}',
-          });
+      var response =
+          await http.get(Uri.parse("${Config().url}/api/user"), headers: {
+        'Authorization': 'Bearer ${box.read('user')['token']}',
+      });
       if (response.statusCode == 200) {
-        user = json.decode(response.body);
+        data = json.decode(response.body);
+        Profile userProfile = Profile.fromJson(data);
+        box.write('profile', jsonEncode(userProfile.toJson()));
       }
     }
   }
@@ -42,7 +47,7 @@ void main() async {
           return GetMaterialApp(
             title: "Application",
             initialRoute:
-                user.entries.isNotEmpty ? AppPages.INITIAL : Routes.LOGIN,
+                data.entries.isNotEmpty ? AppPages.INITIAL : Routes.LOGIN,
             getPages: AppPages.routes,
           );
         }),

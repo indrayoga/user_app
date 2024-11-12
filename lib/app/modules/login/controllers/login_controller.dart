@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:user_app/app/routes/app_pages.dart';
 import 'package:user_app/app/utils/warning_dialog.dart';
+import 'package:user_app/config.dart';
 
 class LoginController extends GetxController {
   final isHidden = true.obs;
@@ -13,19 +14,18 @@ class LoginController extends GetxController {
   final TextEditingController username = TextEditingController();
   final TextEditingController password = TextEditingController();
 
-  final String urlLogin = "https://6ac3-36-85-37-102.ngrok-free.app/api/login";
-  final String urlLogout =
-      "https://6ac3-36-85-37-102.ngrok-free.app/api/logout";
+  final String urlLogin = "/api/login";
+  final String urlLogout = "/api/logout";
 
   final box = GetStorage();
 
   void login() async {
     isLoading.value = true;
-    var response = await http.post(Uri.parse(urlLogin),
+    var response = await http.post(Uri.parse(Config().url + urlLogin),
         body: {"email": username.text, "password": password.text});
 
-    var data = json.decode(response.body);
     if (response.statusCode == 200) {
+      var data = json.decode(response.body);
       if (box.read("user") != null) box.remove("user");
       box.write(
         "user",
@@ -35,7 +35,6 @@ class LoginController extends GetxController {
         },
       );
       isLoading.value = false;
-      print(data);
       Get.offAllNamed(Routes.HOME);
     } else {
       Get.dialog(
@@ -69,7 +68,8 @@ class LoginController extends GetxController {
   }
 
   void logout() async {
-    var response = await http.post(Uri.parse(urlLogout), headers: {
+    var response =
+        await http.post(Uri.parse(Config().url + urlLogout), headers: {
       'Authorization': 'Bearer ${box.read('user')['token']}',
     });
 

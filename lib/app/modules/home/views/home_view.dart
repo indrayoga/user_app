@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:user_app/app/data/profile.dart';
 import 'package:user_app/app/modules/home/views/item_information.dart';
 import 'package:user_app/app/modules/login/controllers/login_controller.dart';
 import 'package:user_app/app/routes/app_pages.dart';
@@ -9,7 +13,8 @@ import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
   HomeView({super.key});
-  LoginController loginController = Get.find();
+  final box = GetStorage();
+  final LoginController loginController = Get.find();
   final double coverHeight = 160;
   final double profileHeight = 100;
 
@@ -17,6 +22,9 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     final bottom = profileHeight / 2;
     final top = coverHeight - profileHeight / 2;
+    final Profile userProfile =
+        Profile.fromJson(jsonDecode(box.read('profile')));
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -77,14 +85,14 @@ class HomeView extends GetView<HomeController> {
             Column(
               children: [
                 Text(
-                  "Indra Yoga Permana",
+                  userProfile.name,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  "Programmer",
+                  userProfile.job,
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey,
@@ -104,12 +112,15 @@ class HomeView extends GetView<HomeController> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                    "Edit",
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                  GestureDetector(
+                    onTap: () => Get.toNamed(Routes.EDIT_PROFILE),
+                    child: Text(
+                      "Edit",
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -121,21 +132,18 @@ class HomeView extends GetView<HomeController> {
                 children: [
                   ItemInformation(
                     icon: Icons.phone_outlined,
-                    title: "081350912242",
+                    title: userProfile.phoneNumber,
                   ),
                   ItemInformation(
                     icon: Icons.email_outlined,
-                    title: "indrayogapermana@gmail.com",
+                    title: userProfile.email,
                   ),
                   ItemInformation(
                     icon: Icons.calendar_month_outlined,
-                    title: "12 July 1988",
+                    title: userProfile.dateOfBirth.toString(),
                   ),
                   ItemInformation(
-                    icon: Icons.place_outlined,
-                    title:
-                        "Jl Padat karya gn steling Kelurahan Gunung samarinda baru, Kecamatan Balikpapan Barat",
-                  ),
+                      icon: Icons.place_outlined, title: userProfile.address),
                   Container(
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
@@ -163,7 +171,7 @@ class HomeView extends GetView<HomeController> {
                                 height: 5,
                               ),
                               Text(
-                                "technology professional focused on designing, coding, and maintaining software solutions to address specific needs or challenges. With expertise in multiple programming languages and a deep understanding of algorithms and data structures, they transform complex requirements into efficient, reliable applications. Known for their logical thinking and problem-solving skills, programmers are detail-oriented, often able to debug and optimize systems to enhance performance and user experience. They typically work closely with other developers, designers, and project managers to bring projects to life, adapting to new technologies and methods to stay relevant in a fast-evolving industry",
+                                userProfile.about,
                                 textAlign: TextAlign.justify,
                                 style: TextStyle(
                                   fontSize: 16,
