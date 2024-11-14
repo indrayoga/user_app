@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-
+import 'package:intl/intl.dart';
 import '../controllers/edit_profile_controller.dart';
 
 class EditProfileView extends GetView<EditProfileController> {
-  const EditProfileView({super.key});
+  EditProfileView({super.key});
+
+  final EditProfileController editProfileController = Get.find();
+  late DateTime _selectedDate;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,6 +28,7 @@ class EditProfileView extends GetView<EditProfileController> {
         padding: EdgeInsets.all(10),
         children: [
           TextField(
+            controller: editProfileController.nameController,
             decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 label: Text(
@@ -34,16 +39,18 @@ class EditProfileView extends GetView<EditProfileController> {
             height: 10,
           ),
           TextField(
+            controller: editProfileController.jobController,
             decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 label: Text(
-                  "Pekerjaan",
+                  "Job",
                 )),
           ),
           SizedBox(
             height: 10,
           ),
           TextField(
+            controller: editProfileController.emailController,
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
                 border: OutlineInputBorder(),
@@ -55,28 +62,32 @@ class EditProfileView extends GetView<EditProfileController> {
             height: 10,
           ),
           TextField(
+            controller: editProfileController.phoneNumberController,
             keyboardType: TextInputType.phone,
             decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 label: Text(
-                  "No Telp",
+                  "Phone Number",
                 )),
           ),
           SizedBox(
             height: 10,
           ),
           TextField(
-            keyboardType: TextInputType.datetime,
+            controller: editProfileController.dateOfBirthController,
+            onTap: () => displayDatePicker(context: context),
+            readOnly: true,
             decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 label: Text(
-                  "Tanggal Lahir",
+                  "Date Of Birth",
                 )),
           ),
           SizedBox(
             height: 10,
           ),
           TextField(
+            controller: editProfileController.addressController,
             keyboardType: TextInputType.multiline,
             maxLines: 3,
             textAlignVertical: TextAlignVertical.top,
@@ -84,7 +95,7 @@ class EditProfileView extends GetView<EditProfileController> {
               border: OutlineInputBorder(),
               alignLabelWithHint: true,
               label: Text(
-                "Alamat",
+                "Address",
               ),
             ),
           ),
@@ -92,6 +103,7 @@ class EditProfileView extends GetView<EditProfileController> {
             height: 10,
           ),
           TextField(
+            controller: editProfileController.aboutController,
             keyboardType: TextInputType.multiline,
             maxLines: 5,
             textAlignVertical: TextAlignVertical.top,
@@ -99,7 +111,7 @@ class EditProfileView extends GetView<EditProfileController> {
               border: OutlineInputBorder(),
               alignLabelWithHint: true,
               label: Text(
-                "Tentang Saya",
+                "About Me",
               ),
             ),
           ),
@@ -115,7 +127,7 @@ class EditProfileView extends GetView<EditProfileController> {
             ),
             onPressed: () {},
             child: Text(
-              "Simpan",
+              "Submit",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -126,5 +138,20 @@ class EditProfileView extends GetView<EditProfileController> {
         ],
       ),
     );
+  }
+
+  displayDatePicker({required BuildContext context}) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      lastDate: DateTime.now(),
+      firstDate: DateTime(1945),
+      initialDate: editProfileController.dateOfBirthController.text.isEmpty
+          ? DateTime.now()
+          : DateFormat('dd-MM-yyyy')
+              .parse(editProfileController.dateOfBirthController.text),
+    );
+    if (pickedDate == null) return;
+    editProfileController.dateOfBirthController.text =
+        DateFormat('dd-MM-yyyy').format(pickedDate);
   }
 }

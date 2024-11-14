@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:user_app/app/data/profile.dart';
 import 'package:user_app/app/modules/home/views/item_information.dart';
 import 'package:user_app/app/modules/login/controllers/login_controller.dart';
@@ -140,7 +141,8 @@ class HomeView extends GetView<HomeController> {
                   ),
                   ItemInformation(
                     icon: Icons.calendar_month_outlined,
-                    title: userProfile.dateOfBirth.toString(),
+                    title: DateFormat('dd-MM-yyyy')
+                        .format(userProfile.dateOfBirth),
                   ),
                   ItemInformation(
                       icon: Icons.place_outlined, title: userProfile.address),

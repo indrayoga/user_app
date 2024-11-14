@@ -1,3 +1,3 @@
 class Config {
-  final url = "https://e9b3-36-85-39-81.ngrok-free.app";
+  final url = "https://a991-36-85-39-222.ngrok-free.app";
 }
