@@ -23,6 +23,7 @@ void main() async {
           await http.get(Uri.parse("${Config().url}/api/user"), headers: {
         'Authorization': 'Bearer ${box.read('user')['token']}',
       });
+
       if (response.statusCode == 200) {
         data = json.decode(response.body);
         Profile userProfile = Profile.fromJson(data);

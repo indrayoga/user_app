@@ -40,8 +40,8 @@ class LoginController extends GetxController {
       Get.dialog(
         barrierDismissible: false,
         WarningDialog(
-          title: "Login Gagal",
-          message: "Username/Password Tidak Cocok",
+          title: "Login Failed",
+          message: "Username/Password Not Match",
           actionButton: ElevatedButton(
             style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
@@ -52,7 +52,7 @@ class LoginController extends GetxController {
               Get.back();
             },
             child: Text(
-              "Tutup",
+              "Close",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 15,
